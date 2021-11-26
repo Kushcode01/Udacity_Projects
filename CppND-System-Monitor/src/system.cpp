@@ -22,6 +22,8 @@ You need to properly format the uptime. Refer to the comments mentioned in forma
 
 // TODO: Return the system's CPU
 Processor& System::Cpu() {
+    Processor cpu;
+    cpu_=cpu;
     return cpu_;
     // string processor;
     // processor = LinuxParser::OperatingSystem();
