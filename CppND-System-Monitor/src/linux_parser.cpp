@@ -10,8 +10,6 @@ using std::stof;
 using std::string;
 using std::to_string;
 using std::vector;
-std::vector<long> util_times(10, 0.0);
-
 // DONE: An example of how to read data from the filesystem
 string LinuxParser::OperatingSystem() {
   string line;
@@ -247,42 +245,49 @@ long LinuxParser::IdleJiffies() {
   return idle_jiffies; 
   }
 
-// TODO: Read and return CPU utilization --------------------------------------------------------------
-float LinuxParser::CpuUtilization() { 
-  
-  long total_jiffies = Jiffies();
-  long idle_jiffies = IdleJiffies();
-  // long idle_jiffies_p = kIdle_p + kIOwait_p ;
-  // long total_jiffies_p = kUser_p + kNice_p + kSystem_p + kIRQ_p + kSoftIRQ_p + kSteal_p + idle_jiffies_p;
-  long idle_jiffies_p = util_times[3] + util_times[4];
-  long total_jiffies_p = util_times[0] + util_times[1] + util_times[2] + util_times[5] + util_times[6] + util_times[7];
-  long totald = total_jiffies - total_jiffies_p;
-  long idled = idle_jiffies - idle_jiffies_p;
 
-  float cpu_u = ((totald - idled)/totald);
-  string line, name, val;
-  vector<long> vals;
-  int count = 0 ;
-  std::ifstream stream(kProcDirectory + kStatFilename);
-  if (stream.is_open()){
-    std::getline(stream, line);
-    std::istringstream linestream(line);
-    while (linestream >> name){
-      if (name == "cpu"){
-        while(count < 10){
-          linestream >> val;
-          std::stringstream string1(val);
-          string1 >> vals[count];
-          count++ ;
+float LinuxParser::CpuUtilizationP(int pid){
+    string line, val;
+    long utime, stime, cutime, cstime, starttime, total_time, seconds;
+    float cpu;
+    std::ifstream stream(kProcDirectory + to_string(pid) + kStatFilename);
+    while(stream.is_open()){
+      std::getline(stream, line);
+      std::istringstream linestream(line);
+      int count = 0;
+      while( linestream >> val){
+        if(count == 13){
+          std::stringstream stream1(val);
+          stream1 >> utime;
         }
+        if(count == 14){
+          std::stringstream stream1(val);
+          stream1 >> stime;
+        }
+        if(count == 15){
+          std::stringstream stream1(val);
+          stream1 >> cutime;
+        }
+        if(count == 16){
+          std::stringstream stream1(val);
+          stream1 >> cstime;
+        }
+        if(count == 21){
+          std::stringstream stream1(val);
+          stream1 >> starttime;
+          starttime = starttime/sysconf(_SC_CLK_TCK);
+        }
+        count++;
       }
-    }
-  }
-  for(int i=0 ; i< 10 ; i ++){
-    util_times.push_back(vals[i]);
+      
   }
 
-  return cpu_u; }
+  total_time = utime + stime + cutime + cstime;
+  seconds = UpTime() - starttime;
+  cpu = (((total_time/sysconf(_SC_CLK_TCK))/seconds)*100);
+  return cpu;
+
+  }
 
 // TODO: Read and return the total number of processes
 int LinuxParser::TotalProcesses() {
@@ -442,46 +447,3 @@ long LinuxParser::UpTime(int pid) {
 
   }
   return 0; }
-
-  float LinuxParser::CpuUtilizationP(int pid){
-    string line, val;
-    long utime, stime, cutime, cstime, starttime, total_time, seconds;
-    float cpu;
-    std::ifstream stream(kProcDirectory + to_string(pid) + kStatFilename);
-    while(stream.is_open()){
-      std::getline(stream, line);
-      std::istringstream linestream(line);
-      int count = 0;
-      while( linestream >> val){
-        if(count == 13){
-          std::stringstream stream1(val);
-          stream1 >> utime;
-        }
-        if(count == 14){
-          std::stringstream stream1(val);
-          stream1 >> stime;
-        }
-        if(count == 15){
-          std::stringstream stream1(val);
-          stream1 >> cutime;
-        }
-        if(count == 16){
-          std::stringstream stream1(val);
-          stream1 >> cstime;
-        }
-        if(count == 21){
-          std::stringstream stream1(val);
-          stream1 >> starttime;
-          starttime = starttime/sysconf(_SC_CLK_TCK);
-        }
-        count++;
-      }
-      
-  }
-
-  total_time = utime + stime + cutime + cstime;
-  seconds = UpTime() - starttime;
-  cpu = (((total_time/sysconf(_SC_CLK_TCK))/seconds)*100);
-  return cpu;
-
-  }

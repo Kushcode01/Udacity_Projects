@@ -9,15 +9,7 @@ It contains relevant attributes as shown below
 */
 class Process {
  public:
-  Process(int pid){
-      pid_ = pid;
-      user_ = LinuxParser::User(pid_);
-      command_ = LinuxParser::Command(pid_);
-      ram_ = LinuxParser::Ram(pid_);
-      uptime_ = LinuxParser::UpTime(pid_);
-      cpuUtilization_ = LinuxParser::CpuUtilizationP(pid_);
-
-  }
+  Process(int);
   int Pid();                               // TODO: See src/process.cpp
   std::string User();                      // TODO: See src/process.cpp
   std::string Command();                   // TODO: See src/process.cpp
