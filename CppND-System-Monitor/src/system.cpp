@@ -25,10 +25,6 @@ Processor& System::Cpu() {
     Processor cpu;
     cpu_=cpu;
     return cpu_;
-    // string processor;
-    // processor = LinuxParser::OperatingSystem();
-    // Processor processor1;
-    // return processor1; 
     }
 
 // TODO: Return a container composed of the system's processes

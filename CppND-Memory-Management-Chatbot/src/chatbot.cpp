@@ -56,7 +56,6 @@ ChatBot::ChatBot(ChatBot &&source)
     source._currentNode = nullptr;
     source._rootNode = nullptr;
     source._chatLogic = nullptr;
-
 }
 
 ChatBot &ChatBot::operator=(ChatBot &&source)
