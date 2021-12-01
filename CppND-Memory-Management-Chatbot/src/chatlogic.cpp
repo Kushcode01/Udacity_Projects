@@ -21,7 +21,7 @@ ChatLogic::ChatLogic()
     
 
     // add pointer to chatlogic so that chatbot answers can be passed on to the GUI
-    _chatBot.SetChatLogicHandle(this);
+    //_chatBot.SetChatLogicHandle(this);
 
     ////
     //// EOF STUDENT CODE
@@ -165,7 +165,7 @@ void ChatLogic::LoadAnswerGraphFromFile(std::string filename)
                             std::unique_ptr<GraphEdge> edge = std::make_unique<GraphEdge>(id);
                             edge->SetChildNode(childNode->get());
                             edge->SetParentNode(parentNode->get());
-                            _edges.push_back(std::move(edge));
+                            //_edges.push_back(std::move(edge));
 
                             // find all keywords for current node
                             AddAllTokensToElement("KEYWORD", tokens, *edge);
@@ -220,7 +220,7 @@ void ChatLogic::LoadAnswerGraphFromFile(std::string filename)
     // add chatbot to graph root node
     // _chatBot("../images/chatbot.png");
     ChatBot lcl_chatbot("../images/chatbot.png");
-    SetChatbotHandle(&lcl_chatbot);
+    //SetChatbotHandle(&lcl_chatbot);
     lcl_chatbot.SetChatLogicHandle(this);
     lcl_chatbot.SetRootNode(rootNode);
     //_chatBot.SetRootNode(rootNode);
@@ -237,12 +237,12 @@ void ChatLogic::SetPanelDialogHandle(ChatBotPanelDialog *panelDialog)
 
 void ChatLogic::SetChatbotHandle(ChatBot* chatbot)
 {
-    _chatBot = std::move(*chatbot);
+    _chatBot = chatbot;
 }
 
 void ChatLogic::SendMessageToChatbot(std::string message)
 {
-    _chatBot.ReceiveMessageFromUser(message);
+    _chatBot->ReceiveMessageFromUser(message);
 }
 
 void ChatLogic::SendMessageToUser(std::string message)
@@ -252,5 +252,5 @@ void ChatLogic::SendMessageToUser(std::string message)
 
 wxBitmap *ChatLogic::GetImageFromChatbot()
 {
-    return _chatBot.GetImageHandle();
+    return _chatBot->GetImageHandle();
 }
