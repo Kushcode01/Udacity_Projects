@@ -184,9 +184,9 @@ long LinuxParser::ActiveJiffies(int pid) {
 // TODO: Read and return the number of active jiffies for the system
 long LinuxParser::ActiveJiffies() { 
   string line, name, val;
-  long active_jiffies = 0.0;
+  long active_jiffies = 0;
   vector<long> vals;
-  int count = 0 ;
+  long value;
   std::ifstream stream(kProcDirectory + kStatFilename);
   if (stream.is_open()){
     std::getline(stream, line);
@@ -195,8 +195,8 @@ long LinuxParser::ActiveJiffies() {
       if (name == "cpu"){
         while (linestream >> val){
           std::stringstream string1(val);
-          string1 >> vals[count];
-          count ++ ;
+          string1 >> value;
+          vals.push_back(value);
         }
       }
       else{
@@ -205,7 +205,7 @@ long LinuxParser::ActiveJiffies() {
 
     }
   }
-  for (int i=0; i < 10; i++){
+  for (int i=0; i < vals.size(); i++){
     if((i == 3) || (i==4)){
       continue;
     }
