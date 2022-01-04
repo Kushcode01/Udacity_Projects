@@ -90,6 +90,7 @@ void TrafficLight::cycleThroughPhases()
             if (_currentPhase == green){
                 _currentPhase = red;
             }
+            _messageQueue.send(std::move(_currentPhase));
             
         }
        
