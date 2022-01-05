@@ -221,6 +221,7 @@ long LinuxParser::IdleJiffies() {
   long idle_jiffies = 0;
   vector<long> vals;
   int count = 0 ;
+  long value;
   std::ifstream stream(kProcDirectory + kStatFilename);
   if (stream.is_open()){
     std::getline(stream, line);
@@ -229,7 +230,8 @@ long LinuxParser::IdleJiffies() {
       if (name == "cpu"){
         while (linestream >> val){
           std::stringstream string1(val);
-          string1 >> vals[count];
+          string1 >> value;
+          vals.push_back(value);
           count ++ ;
         }
       }
