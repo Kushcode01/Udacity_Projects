@@ -121,6 +121,7 @@ long LinuxParser::Jiffies() {
   long jiffies = 0.0;
   vector<long> vals;
   int count = 0 ;
+  long value;
   std::ifstream stream(kProcDirectory + kStatFilename);
   if (stream.is_open()){
     std::getline(stream, line);
@@ -129,7 +130,8 @@ long LinuxParser::Jiffies() {
       if (name == "cpu"){
         while (linestream >> val){
           std::stringstream string1(val);
-          string1 >> vals[count];
+          string1 >> value;
+          vals.push_back(value);
           count ++ ;
         }
       }
@@ -139,8 +141,8 @@ long LinuxParser::Jiffies() {
 
     }
   }
-  for (int i:vals){
-    jiffies+=vals[i];
+  for (long i:vals){
+    jiffies+=i;
   } 
   return jiffies; }
 
