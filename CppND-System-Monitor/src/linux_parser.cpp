@@ -3,7 +3,6 @@
 #include <sstream>
 #include <string>
 #include <vector>
-
 #include "linux_parser.h"
 
 using std::stof;
@@ -118,7 +117,7 @@ long LinuxParser::UpTime() {
 // TODO: Read and return the number of jiffies for the system
 long LinuxParser::Jiffies() { 
   string line, name, val;
-  long jiffies = 0.0;
+  long jiffies = 0;
   vector<long> vals;
   int count = 0 ;
   long value;
@@ -152,7 +151,7 @@ long LinuxParser::ActiveJiffies(int pid) {
 
   string line, name, val;
   long utime, stime, cutime, cstime ;
-  long p_jiffies = 0.0;
+  long p_jiffies = 0;
   std::ifstream stream(kProcDirectory + to_string(pid) + kStatFilename);
   if (stream.is_open()){
     std::getline(stream, line);
@@ -219,7 +218,7 @@ long LinuxParser::ActiveJiffies() {
 // TODO: Read and return the number of idle jiffies for the system
 long LinuxParser::IdleJiffies() { 
   string line, name, val;
-  long idle_jiffies = 0.0;
+  long idle_jiffies = 0;
   vector<long> vals;
   int count = 0 ;
   std::ifstream stream(kProcDirectory + kStatFilename);
