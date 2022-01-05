@@ -50,8 +50,8 @@ enum CPUStates {
 //   kSteal_p = 0,
 //   kGuest_p = 0,
 //   kGuestNice_p = 0};
-float CpuUtilization();
-float CpuUtilizationP( int pid);
+std::vector<std::string> CpuUtilization();
+// float CpuUtilizationP( int pid);
 long Jiffies();
 long ActiveJiffies();
 long ActiveJiffies(int pid);
