@@ -38,8 +38,8 @@ float Processor::Utilization() {
   // sleep(5);
   // long idle_jiffies_p = kIdle_p + kIOwait_p ;
   // long total_jiffies_p = kUser_p + kNice_p + kSystem_p + kIRQ_p + kSoftIRQ_p + kSteal_p + idle_jiffies_p;
-   long idle_jiffies_p = util_times[3] + util_times[4];
-   long total_jiffies_p = util_times[0] + util_times[1] + util_times[2] + util_times[5] + util_times[6] + util_times[7];
+  long idle_jiffies_p = util_times[3] + util_times[4];
+  long total_jiffies_p = util_times[0] + util_times[1] + util_times[2] + util_times[5] + util_times[6] + util_times[7];
   // long idle_jiffies_p = LinuxParser::IdleJiffies();;
   // long total_jiffies_p = LinuxParser::Jiffies();
   long totald = total_jiffies - total_jiffies_p;

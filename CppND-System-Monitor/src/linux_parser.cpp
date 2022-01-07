@@ -1,11 +1,9 @@
-#include "linux_parser.h"
-
 #include <dirent.h>
 #include <unistd.h>
 #include <sstream>
 #include <string>
 #include <vector>
-
+#include "linux_parser.h"
 
 using std::stof;
 using std::string;
@@ -95,10 +93,10 @@ float LinuxParser::MemoryUtilization() {
         string1 >> buffer ; 
       }
     }
-    
+    return (((float)(mem_tot - mem_free)/(float)mem_tot));
 
   }
-  return (((float)(mem_tot - mem_free)/(float)mem_tot));
+  return 0.0;
 }
 
 // TODO: Read and return the system uptime
@@ -110,11 +108,10 @@ long LinuxParser::UpTime() {
     std::getline(stream, line);
     std::stringstream linestream(line);
     linestream >> uptime;
-    return uptime;
 
   }
 
-  return 0.0; }
+  return uptime; }
 
 // TODO: Read and return the number of jiffies for the system
 long LinuxParser::Jiffies() { 
@@ -166,64 +163,82 @@ long LinuxParser::ActiveJiffies(int pid) {
   return p_jiffies; }
 
 // TODO: Read and return the number of active jiffies for the system
-long LinuxParser::ActiveJiffies() { 
-  string line, name, val;
+long LinuxParser::ActiveJiffies() {
   long active_jiffies = 0;
-  vector<long> vals;
-  long value;
-  std::ifstream stream(kProcDirectory + kStatFilename);
-  if (stream.is_open()){
-    std::getline(stream, line);
-    std::istringstream linestream(line);
-    while (linestream >> name){
-      if (name == "cpu"){
-        while (linestream >> val){
-          std::stringstream string1(val);
-          string1 >> value;
-          vals.push_back(value);
-        }
-      }
-      else{
-        continue;
-      }
+  vector<string> jiffies = CpuUtilization();
 
-    }
-  }
-  for (int i=0; i < vals.size(); i++){
-    if((i == 3) || (i==4)){
-      continue;
-    }
-    else{
-      active_jiffies += vals[i];
-    }
+  long user = std::stoi(jiffies[CPUStates::kUser_]);
+  long nice = std::stoi(jiffies[CPUStates::kNice_]);
+  long irq = std::stoi(jiffies[CPUStates::kIRQ_]);
+  long sirq = std::stoi(jiffies[CPUStates::kSoftIRQ_]);
+  long system = std::stoi(jiffies[CPUStates::kSystem_]);
+  long steal = std::stoi(jiffies[CPUStates::kSteal_]);
+  active_jiffies = user + nice + irq + sirq + system + steal ;
+  // string line, name, val;
+  // long active_jiffies = 0;
+  
+  // vector<long> vals;
+  // long value;
+  // std::ifstream stream(kProcDirectory + kStatFilename);
+  // if (stream.is_open()){
+  //   std::getline(stream, line);
+  //   std::istringstream linestream(line);
+  //   while (linestream >> name){
+  //     if (name == "cpu"){
+  //       while (linestream >> val){
+  //         std::stringstream string1(val);
+  //         string1 >> value;
+  //         vals.push_back(value);
+  //       }
+  //     }
+  //     else{
+  //       continue;
+  //     }
+
+  //   }
+  // }
+  // for (int i=0; i < vals.size(); i++){
+  //   if((i == 3) || (i==4)){
+  //     continue;
+  //   }
+  //   else{
+  //     active_jiffies += vals[i];
+  //   }
     
-  } 
+  // } 
   return active_jiffies; 
   }
 
 // TODO: Read and return the number of idle jiffies for the system
 long LinuxParser::IdleJiffies() { 
-  string line, name, val;
+
   long idle_jiffies = 0;
-  vector<long> vals;
-  int count = 0 ;
-  long value;
-  std::ifstream stream(kProcDirectory + kStatFilename);
-  if (stream.is_open()){
-    std::getline(stream, line);
-    std::istringstream linestream(line);
-    while (linestream >> name){
-      if (name == "cpu"){
-        while (linestream >> val){
-          std::stringstream string1(val);
-          string1 >> value;
-          vals.push_back(value);
-          count ++ ;
-        }
-      }
-    }
-  }
-  idle_jiffies = vals[3] + vals[4];
+  vector<string> jiffies = LinuxParser::CpuUtilization();
+
+  long idle = std::stoi(jiffies[CPUStates::kIdle_]);
+  long iowait = std::stoi(jiffies[CPUStates::kIOwait_]);
+  idle_jiffies = idle + iowait;
+  // string line, name, val;
+  // long idle_jiffies = 0;
+  // vector<long> vals;
+  // int count = 0 ;
+  // long value;
+  // std::ifstream stream(kProcDirectory + kStatFilename);
+  // if (stream.is_open()){
+  //   std::getline(stream, line);
+  //   std::istringstream linestream(line);
+  //   while (linestream >> name){
+  //     if (name == "cpu"){
+  //       while (linestream >> val){
+  //         std::stringstream string1(val);
+  //         string1 >> value;
+  //         vals.push_back(value);
+  //         count ++ ;
+  //       }
+  //     }
+  //   }
+  // }
+  // idle_jiffies = vals[3] + vals[4];
   return idle_jiffies; 
   }
 
@@ -234,15 +249,14 @@ vector<string> LinuxParser::CpuUtilization() {
   vector<string> cpuN;
   std::ifstream filestream(kProcDirectory + kStatFilename);
   if (filestream.is_open()) {
-    while (std::getline(filestream, line))  // dec31 mod
+    while (std::getline(filestream, line))  
     {
       std::istringstream linestream(line);
-      linestream >> key;  // skipped "cpu" characters
-                          // for(int i = 0; i < 10; i++)
+      linestream >> key;  
       if (key == "cpu") {
-        while (linestream >> values)  // dec31 mod
-        {                             // std::cout << value;
-          cpuN.push_back(values);     // string
+        while (linestream >> values)  
+        {                            
+          cpuN.push_back(values);     
         }
       }
     }
