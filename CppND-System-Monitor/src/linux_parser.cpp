@@ -128,7 +128,7 @@ long LinuxParser::UpTime() {
     linestream >> up_time;
 
   }
-  uptime = std::atoi(up_time.c_str());
+  uptime = std::stoi(up_time);
 
   return uptime; }
 
@@ -471,10 +471,10 @@ long LinuxParser::UpTime(int pid) {
         linestream >> val;
       }
       up_time = std::stoi(val);
-      long sys_uptime = LinuxParser::UpTime();
-      uptime_process = (sys_uptime - ((up_time)/sysconf(_SC_CLK_TCK)));
+      // long sys_uptime = LinuxParser::UpTime();
+      // uptime_process = (sys_uptime - ((up_time)/sysconf(_SC_CLK_TCK)));
       //string u_time = Format::ElapsedTime(uptime_process);
-      return (uptime_process);
+      return (up_time);
     }
 
   }
