@@ -1,3 +1,4 @@
+#include "ncurses_display.h"
 #include <curses.h>
 #include <chrono>
 #include <string>
@@ -5,7 +6,6 @@
 #include <vector>
 
 #include "format.h"
-#include "ncurses_display.h"
 #include "system.h"
 
 using std::string;
@@ -69,11 +69,11 @@ void NCursesDisplay::DisplayProcesses(std::vector<Process>& processes,
   mvwprintw(window, row, time_column, "TIME+");
   mvwprintw(window, row, command_column, "COMMAND");
   wattroff(window, COLOR_PAIR(2));
-  for (int i = 0; i < n; ++i) {
+  int const num_processes = int(processes.size()) > n ? n : processes.size();
+  for (int i = 0; i < num_processes; ++i) {
     //You need to take care of the fact that the cpu utilization has already been multiplied by 100.
     // Clear the line
     mvwprintw(window, ++row, pid_column, (string(window->_maxx-2, ' ').c_str()));
-    
     mvwprintw(window, row, pid_column, to_string(processes[i].Pid()).c_str());
     mvwprintw(window, row, user_column, processes[i].User().c_str());
     float cpu = processes[i].CpuUtilization() * 100;

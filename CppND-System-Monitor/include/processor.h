@@ -9,7 +9,7 @@ class Processor {
 
   // TODO: Declare any necessary private members
  private:
-  long util_times[10];
+  std::vector<long> util_times;
 
 };
 

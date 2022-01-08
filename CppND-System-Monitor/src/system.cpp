@@ -33,7 +33,7 @@ vector<Process>& System::Processes() {
         Process process(pid);
         processes_.push_back(process);
     }
-    std::sort(processes_.begin(), processes_.end());
+    std::sort(processes_.begin(), processes_.end(), std::less<Process>());
     return processes_; }
 
 // TODO: Return the system's kernel identifier (string)
