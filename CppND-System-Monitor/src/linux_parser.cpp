@@ -387,7 +387,7 @@ string LinuxParser::Ram(int pid) {
       std::replace(line.begin(), line.end(), ':', ' ');
       std::istringstream linestream(line);
       linestream >> type;
-      if (type == "VmSize"){
+      if (type == "VmRSS"){
         linestream >> mem_u;
         mem_kb = std::stoi(mem_u);
         mem_mb = float(mem_kb)/float(1024);
@@ -471,10 +471,10 @@ long LinuxParser::UpTime(int pid) {
         linestream >> val;
       }
       up_time = std::stoi(val);
-      // long sys_uptime = LinuxParser::UpTime();
-      // uptime_process = (sys_uptime - ((up_time)/sysconf(_SC_CLK_TCK)));
-      //string u_time = Format::ElapsedTime(uptime_process);
-      return (up_time);
+      long sys_uptime = LinuxParser::UpTime();
+      uptime_process = (sys_uptime - ((up_time)/sysconf(_SC_CLK_TCK)));
+      // string u_time = Format::ElapsedTime(uptime_process);
+      return (uptime_process);
     }
 
   }

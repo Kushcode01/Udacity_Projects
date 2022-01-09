@@ -29,9 +29,14 @@ Processor& System::Cpu() {
 vector<Process>& System::Processes() {
     processes_.clear(); 
     for(int pid:LinuxParser::Pids()){
+        string ram_p = LinuxParser::Ram(pid);
+        string cmd_p = LinuxParser::Command(pid);
+        if((!(ram_p.empty())) && (!(cmd_p.empty()))){
+            processes_.push_back(pid);
+
+        }
+
         
-        Process process(pid);
-        processes_.push_back(process);
     }
     std::sort(processes_.begin(), processes_.end(), std::less<Process>());
     return processes_; }
