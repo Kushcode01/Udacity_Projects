@@ -34,8 +34,8 @@ float Process::CpuUtilization() {
 // TODO: Return the command that generated this process
 string Process::Command() { 
     string command_p = LinuxParser::Command(pid_);
-    if(command_p.length()>20){
-        command_p.resize(20);
+    if(command_p.length()>40){
+        command_p.resize(40);
         command_p.append("....");
     }
     return command_p;  }
