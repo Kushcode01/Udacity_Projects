@@ -12,7 +12,6 @@ float Processor::Utilization() {
   string line, name, val;
   vector<long> vals;
   float cpu_u = 0.0;
-  int count = 0 ;
   long value ;
   std::ifstream stream(LinuxParser::kProcDirectory + LinuxParser::kStatFilename);
   if (stream.is_open()){
