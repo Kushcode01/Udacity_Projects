@@ -70,7 +70,7 @@ void TrafficLight::cycleThroughPhases()
     lastUpdate = std::chrono::system_clock::now();
     std::random_device rd;
     std::mt19937 eng(rd());
-    std::uniform_real_distribution<double> distr(4.0, 6.0);
+    std::uniform_real_distribution<double> distr(10.0, 15.0); // longer duration lights
     double timeSinceLastUpdate;
 
     // generate the cycle duration randomly
